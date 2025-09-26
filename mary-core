@@ -1,0 +1,38 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity myCore is 
+	port(
+		clk : in std_logic;
+		volt_in : in std_logic_vector(13 downto 0);
+		volt_out : out std_logic_vector(13 downto 0);
+		old_out : out std_logic_vector(27 downto 0);
+		);
+
+end entity myCore;
+
+architecture behavior of myCore is
+
+signal dummy_int : integer:=8;
+signal dummy_stdVec : std_logic_vector(13 downto 0) := (others => '0');
+signal dummy_volt : std_logic_vector(27 downto 0);
+
+begin --begins the architecture behavior
+volt_out <= dummy_volt (13 downto 0);
+scale_proc : process(clk) is
+	begin --begins the process
+		if rising_edge(clk) then -- if clock edge rising (increasing)
+		dummy_stdVec<=std_logic_vector(signed(volt_in)*signed(dummy_stdVec)+to_signed(dummy_int,14));
+		end if;
+	end process scale_proc;
+
+math_proc : process(clk) is 
+begin -- begins the process
+	if rising_edge(clk) then
+		old_out<= std_logic_vector(signed(volt_in)*signed(dummy_stdVec)+to_signed(dummy_int,27));
+	end if;
+end process;
+
+	
+end architecture behavior;
